@@ -1,0 +1,17 @@
+test(dLEMS) ::= <<
+
+function xdot = <dLEMS.name>_dynamics(t, state, pars)
+
+    <dLEMS.parameters:{each | <each> = pars(<i>);}; separator = "\n">
+
+    <dLEMS.parameters.keys:{k | <k> = <dLEMS.parameters.(k)>;}; separator="\n">
+
+    <unpackMapInto(dLEMS.parameters, "pars")>
+
+end
+>>
+
+unpackMapInto(map, name) ::= <<
+<map:{key | <name>(<i>) = <map.(key)>}; separator="\n">
+>>
+

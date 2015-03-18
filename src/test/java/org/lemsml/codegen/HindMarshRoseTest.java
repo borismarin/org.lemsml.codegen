@@ -36,6 +36,7 @@ public class HindMarshRoseTest
 		Lems lemsDoc = compiler.generateLEMSDocument();
 
 		ComponentType hindRoseCompType = lemsDoc.getComponentTypeByName("hindmarshRoseCell");
+		System.out.println(hindRoseCompType.getDescription());
 
 	}
 
