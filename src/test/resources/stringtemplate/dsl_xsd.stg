@@ -1,0 +1,14 @@
+delimiters "$", "$"
+dsl_xsd(lems) ::= <<
+
+<!-- Test xsd element generation lems file from $lems.definedIn$ -->
+<xml>
+	$xsdType(lems.componentTypes)$
+</xml>
+>>
+
+
+xsdType(types) ::= <<
+$types:{type |  <xs:element name="$type.name$">}; separator="\n"$
+>>
+
