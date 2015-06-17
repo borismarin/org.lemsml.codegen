@@ -1,14 +1,45 @@
 delimiters "$", "$"
+
 dsl_xsd(lems) ::= <<
 
 <!-- Test xsd element generation lems file from $lems.definedIn$ -->
-<xml>
-	$xsdType(lems.componentTypes)$
-</xml>
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://www.neuroml.org/schema/neuroml2"
+    xmlns="http://www.neuroml.org/schema/neuroml2"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	$lems.componentTypes:xsd_type(); separator="\n"$
+
+</xs:schema>
 >>
 
 
-xsdType(types) ::= <<
-$types:{type |  <xs:element name="$type.name$">}; separator="\n"$
+xsd_type(type) ::= <<
+<xs:complexType name="$type.name$">
+  $type:extension()$
+</xs:element>
+
+>>
+
+extension(type) ::= <<
+$if(type.extends)$
+<xs:complexContent>
+  <xs:extension base="$type.extends$"/>
+    $type:subcomponents()$
+  </xs:complexContent>
+</xs:extension>$\\$
+$else$
+$type:subcomponents()$$\\$
+$endif$
+>>
+
+xsd_attribute(par) ::= "<xs:attribute name=\"$par.name$\" type=\"$par:attr_type()$\"/>"
+
+
+attr_type(par) ::= "$if(par.dimension)$Nml2Quantity$else$Nml2Quantity_none$endif$"
+
+
+subcomponents(type) ::= <<
+$type.parameters:xsd_attribute(); separator="\n"$
 >>
 
