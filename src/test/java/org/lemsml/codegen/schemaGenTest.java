@@ -10,6 +10,7 @@ import org.lemsml.model.extended.Lems;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
+import org.stringtemplate.v4.StringRenderer;
 
 public class schemaGenTest
 {
@@ -35,6 +36,7 @@ public class schemaGenTest
 	{
 		URL stURL = getClass().getResource("/stringtemplate/dsl_xsd.stg");
 		STGroup group = new STGroupFile(stURL.getFile());
+		group.registerRenderer(String.class, new StringRenderer());
 		ST stTest = group.getInstanceOf("dsl_xsd");
 
 		stTest.add("lems", this.lems);

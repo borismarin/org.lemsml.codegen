@@ -15,11 +15,14 @@ dsl_xsd(lems) ::= <<
 
 
 xsd_type(type) ::= <<
-<xs:complexType name="$type.name$">
+<xs:complexType name="$type.name; format="cap"$>
   $type:extension()$
 </xs:element>
 
 >>
+
+name(x) ::= "$x.name$"
+
 
 extension(type) ::= <<
 $if(type.extends)$
