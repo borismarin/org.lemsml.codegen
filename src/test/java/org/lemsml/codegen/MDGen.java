@@ -12,7 +12,7 @@ import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 import org.stringtemplate.v4.StringRenderer;
 
-public class schemaGenTest
+public class MDGen
 {
 
 	protected File getLocalFile(String fname) {
@@ -34,7 +34,7 @@ public class schemaGenTest
 	@Test
 	public void test()
 	{
-		URL stURL = getClass().getResource("/stringtemplate/dsl_xsd.stg");
+		URL stURL = getClass().getResource("/stringtemplate/latex.stg");
 		STGroup group = new STGroupFile(stURL.getFile());
 		group.registerRenderer(String.class, new StringRenderer());
 		ST stTest = group.getInstanceOf("dsl_xsd");

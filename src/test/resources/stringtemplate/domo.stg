@@ -1,0 +1,55 @@
+domo(lems) ::= <<
+
+//Test domain model generation from <lems.definedIn>
+<lems.componentTypes:class(); separator="\n">
+>>
+
+class(type) ::= <<
+class <type.name> <type:extension()> {
+<type:fields()>
+<type.childrens:build_children()>
+}
+>>
+
+extension(type) ::= "extends <if(type.extends)><type.extends><else>Component<endif>"
+
+build_children(children) ::= <<
+	List\<? extends <children.type>\> get<children.name; format="cap">;
+>>
+
+fields(type) ::= <<
+  <type.parameters:{ p | String <p.name>; }; separator = "\n">
+>>
+
+
+accessors(prop) ::= <<
+<prop:getter()>
+<prop:setter()>
+>>
+
+
+setter(prop) ::= <<
+	@XmlAttribute
+	public void set<prop.name; format="cap">(String val) {
+        this.<prop.name; format="cap"> = val;
+}
+>>
+
+getter(prop) ::= <<
+	public String get<prop.name>(String val) {
+        this.<prop.name> = val;
+}
+<!
+    @XmlElement(name = "Component")
+    protected List<org.lemsml.model.extended.Component> component;
+    @XmlAttribute(name = "type", required = true)
+    protected String type;
+    @XmlAttribute(name = "name")
+    protected String name;
+    @XmlAttribute(name = "id", required = true)
+    protected String id;
+    @XmlAnyAttribute
+    private Map<QName, String> otherAttributes = new HashMap<QName, String>();
+!>
+>>
+

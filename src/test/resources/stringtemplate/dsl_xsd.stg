@@ -1,8 +1,7 @@
 delimiters "$", "$"
-
 dsl_xsd(lems) ::= <<
 
-<!-- Test xsd element generation lems file from $lems.definedIn$ -->
+//Test xsd element generation lems file from <lems.definedIn>
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema targetNamespace="http://www.neuroml.org/schema/neuroml2"
     xmlns="http://www.neuroml.org/schema/neuroml2"

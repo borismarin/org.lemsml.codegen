@@ -1,6 +1,4 @@
-<Lems xmlns="http://www.neuroml.org/lems/0.6"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.neuroml.org/lems/0.6 https://raw.github.com/LEMS/LEMS/master/Schemas/LEMS/LEMS_v0.6.xsd">
+<Lems xmlns="http://www.neuroml.org/lems/0.9.0">
     <Dimension name="time" t="1"/>
     <Dimension name="length" l="1"/>
     <Dimension name="mass" m="1"/>

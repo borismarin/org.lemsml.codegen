@@ -1,7 +1,5 @@
 package org.lemsml.codegen;
 
-import java.util.HashMap;
-
 import org.lemsml.model.exceptions.LEMSCompilerError;
 import org.lemsml.model.exceptions.LEMSCompilerException;
 import org.lemsml.model.extended.Component;
@@ -12,11 +10,9 @@ import org.lemsml.visitors.BaseVisitor;
 public class DSLSchemaBuilder extends BaseVisitor<Void, Throwable> {
 
 	private Lems lems;
-	private HashMap<String, ComponentType> compTypes;
 
 	public DSLSchemaBuilder(Lems lems) throws Throwable {
 		this.lems = lems;
-		this.compTypes = new HashMap<String, ComponentType>();
 	}
 
 	@Override
