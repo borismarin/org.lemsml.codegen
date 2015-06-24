@@ -48,6 +48,7 @@ public class FooML extends org.lemsml.model.extended.Lems {
 	}
 
 	public List<Base> getAllBases() {
+		//Should that be recursive (into subcomps?)
 		List<Base> bases = new ArrayList<Base>();
 		bases.addAll(getBases());
 		bases.addAll(getFoos());

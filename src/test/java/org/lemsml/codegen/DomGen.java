@@ -28,6 +28,70 @@ public class DomGen {
 
 	private JAXBContext jaxbContext;
 
+	@Before
+
+	@Test
+	public void testDomGen() throws Throwable {
+
+		Lems domainDefs = new LEMSCompilerFrontend(
+				getLocalFile("/examples/domo/fooml.xml"))
+				.generateLEMSDocument();
+
+		// The compiler will have a "domain specific library" backend
+		ST stTest = merge(domainDefs);
+		System.out.println(stTest.render());
+
+		// We then want to unmarshall a DS model (defined in xml) using the
+		// generated (hybrid domain/lems) objects (of which we have literal
+		// pregenerated examples FooML.java Foo.java, etc)
+		File model = getLocalFile("/examples/domo/foo.xml");
+
+		jaxbContext = JAXBContext.newInstance("org.lemsml.codegen.domo");
+		//genSchema(jaxbContext); //TODO: see comment on method
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		FooML fooModel = (FooML) jaxbUnmarshaller.unmarshal(model);
+
+		assertEquals(1, fooModel.getFoos().size());
+		assertEquals(0, fooModel.getBars().size());
+		assertEquals(1, fooModel.getAllBars().size());
+		assertEquals(2, fooModel.getAllBases().size());
+
+		//TODO: do we always implicitly "include" the defs?
+		//      what about constants / ... ?
+		fooModel.getComponentTypes().addAll(domainDefs.getComponentTypes());
+		new LEMSSemanticAnalyser(fooModel).analyse();
+
+		assertEquals(1.0, fooModel
+							.getComponentById("baz0")
+							.resolve("p1")
+							.getValue(), 1e-12);
+		assertEquals(0.0, fooModel
+							.getComponentById("foo0")
+							.getChildren()
+							.get(0)
+							.resolve("p0")
+							.evaluate(), 1e-12);
+
+	}
+
+	// @Test
+	// TODO: breaks if FooML extends Lems
+	// cause: ComplexType of Lems is anonymous:
+	//  https://java.net/jira/browse/JAXB-411
+	public void genSchema(JAXBContext jaxbContext) throws IOException {
+		class MySchemaOutputResolver extends SchemaOutputResolver {
+			public Result createOutput(String namespaceURI,
+					String suggestedFileName) throws IOException {
+				File file = new File(suggestedFileName);
+				StreamResult result = new StreamResult(file);
+				result.setSystemId(file.getAbsolutePath());
+				return result;
+			}
+		}
+		jaxbContext.generateSchema(new MySchemaOutputResolver());
+	}
+
+
 	protected File getLocalFile(String fname) {
 		return new File(getClass().getResource(fname).getFile());
 	}
@@ -40,84 +104,6 @@ public class DomGen {
 
 		stTest.add("lems", lems);
 		return stTest;
-	}
-
-	// @Test
-	public void testPend() throws Throwable {
-		File pendFile = getLocalFile("/examples/opensourcechaos/SimplePendulum.xml");
-		LEMSCompilerFrontend compiler = new LEMSCompilerFrontend(pendFile);
-		Lems lems = compiler.generateLEMSDocument();
-
-		ST stTest = merge(lems);
-
-		System.out.println(stTest.render());
-
-	}
-
-	@Before
-	public void setUp() throws JAXBException, IOException {
-		jaxbContext = JAXBContext
-		//		.newInstance("org.lemsml.codegen.domo:org.lemsml.model");
-		.newInstance("org.lemsml.codegen.domo");
-
-		//genSchema();  // see comment on method
-	}
-
-	@Test
-	public void testDomGen() throws Throwable {
-
-		Lems domainDefs = new LEMSCompilerFrontend(
-				getLocalFile("/examples/domo/fooml.xml"))
-				.generateLEMSDocument();
-
-		// the compiler will have a "domain specific library" backend
-		ST stTest = merge(domainDefs);
-		System.out.println(stTest.render());
-
-		// we then want to unmarshall a DS model (defined in xml) using the
-		// generated (hybrid domain/lems) objects (of which we have literal
-		// pregenerated examples FooML.java Foo.java, etc)
-
-		File model = getLocalFile("/examples/domo/foo.xml");
-
-		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		FooML fooModel = (FooML) jaxbUnmarshaller.unmarshal(model);
-
-		assertEquals(1, fooModel.getFoos().size());
-		assertEquals(0, fooModel.getBars().size());
-		assertEquals(1, fooModel.getAllBars().size());
-		assertEquals(2, fooModel.getAllBases().size());
-
-		//todo: do we always implicitly "include" the defs?
-		//      what about constants / ... ?
-		fooModel.getComponentTypes().addAll(domainDefs.getComponentTypes());
-		new LEMSSemanticAnalyser(fooModel).analyse();
-
-		assertEquals(1.0, fooModel.getComponentById("baz0").resolve("p1").getValue(), 1e-12);
-
-		assertEquals(0.0, fooModel.getComponentById("foo0").getChildren().get(0).resolve("p0").evaluate(), 1e-12);
-
-
-	}
-
-	// @Test
-	// TODO: brakes if FooML extends Lems
-	// cause: ComplexType of Lems is anonymous:
-	//  https://java.net/jira/browse/JAXB-411
-	public void genSchema() throws IOException {
-		jaxbContext.generateSchema(new MySchemaOutputResolver());
-	}
-
-	public class MySchemaOutputResolver extends SchemaOutputResolver {
-
-		public Result createOutput(String namespaceURI, String suggestedFileName)
-				throws IOException {
-			File file = new File(suggestedFileName);
-			StreamResult result = new StreamResult(file);
-			result.setSystemId(file.getAbsolutePath());
-			return result;
-		}
-
 	}
 
 }
