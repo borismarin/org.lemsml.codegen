@@ -58,7 +58,7 @@ public class StringTemplateTest
 	@Test
 	public void testGroup()
 	{
-		URL stURL = getClass().getResource("/stringtemplate/test.stg");
+		URL stURL = getClass().getResource("/stringtemplate/mlab.stg");
 		STGroup group = new STGroupFile(stURL.getFile());
 		ST stTest = group.getInstanceOf("test");
 

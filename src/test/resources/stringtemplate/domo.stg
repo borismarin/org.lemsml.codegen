@@ -5,7 +5,7 @@ domo(lems) ::= <<
 >>
 
 class(type) ::= <<
-class <type.name> <type:extension()> {
+class <type.name>_ <type:extension()> {
 <type:fields()>
 <type.childrens:build_children()>
 }
