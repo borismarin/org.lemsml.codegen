@@ -1,55 +1,65 @@
-domo(lems) ::= <<
+domo(lems, ml_name) ::= <<
 
 //Test domain model generation from <lems.definedIn>
-<lems.componentTypes:class(); separator="\n">
+//----------------------------------------//
+<lems.componentTypes:class_file(); separator="\n">
+>>
+pkg_name() ::= "org.<ml_name>.model"
+pkg() ::= "package <pkg_name()>"
+
+class_file(type) ::= <<
+<pkg()>
+
+<imports(type)>
+<class(type)>
+>>
+
+imports(type) ::= <<
+import javax.xml.bind.annotation.XmlType;
+<if(!type.extends)>import <lems_comp()><\n><endif>
 >>
 
 class(type) ::= <<
-class <type.name>_ <type:extension()> {
-<type:fields()>
-<type.childrens:build_children()>
+@XmlType
+class <type.name> <type:extension()> {
+
+<type.children:children(); separator = "\n\n">
+<type.parameters:accessors(); separator = "\n\n">
 }
+
+//----------------------------------------//
 >>
 
-extension(type) ::= "extends <if(type.extends)><type.extends><else>Component<endif>"
 
-build_children(children) ::= <<
-	List\<? extends <children.type>\> get<children.name; format="cap">;
->>
 
-fields(type) ::= <<
-  <type.parameters:{ p | String <p.name>; }; separator = "\n">
+lems_comp() ::= "org.lemsml.model.Component"
+quali_name() ::= "<pkg_name()>.<type.extends>"
+
+extension(type) ::= "extends <if_extends(type.extends, \"Component\")>"
+
+if_extends(if_true, if_false) ::= "<if(type.extends)><if_true><else><if_false><endif>"
+
+children(child) ::= <<
+	private List\<<child.type>\> <child.name; format="cap">s;
 >>
 
 
 accessors(prop) ::= <<
 <prop:getter()>
+
 <prop:setter()>
 >>
 
 
 setter(prop) ::= <<
-	@XmlAttribute
 	public void set<prop.name; format="cap">(String val) {
-        this.<prop.name; format="cap"> = val;
-}
+		withParameterValue("<prop.name>", val);
+	}
 >>
 
 getter(prop) ::= <<
-	public String get<prop.name>(String val) {
-        this.<prop.name> = val;
-}
-<!
-    @XmlElement(name = "Component")
-    protected List<org.lemsml.model.extended.Component> component;
-    @XmlAttribute(name = "type", required = true)
-    protected String type;
-    @XmlAttribute(name = "name")
-    protected String name;
-    @XmlAttribute(name = "id", required = true)
-    protected String id;
-    @XmlAnyAttribute
-    private Map<QName, String> otherAttributes = new HashMap<QName, String>();
-!>
+	public String get<prop.name; format="cap">() {
+		return getParameterValue("<prop.name>");
+	}
 >>
 

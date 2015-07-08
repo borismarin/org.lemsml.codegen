@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FooML>
-    <Foo id="foo0">
-        <Bar id="bar0" p0="0"/>
+    <Foo id="foo0" pFoo="1">
+        <Bar id="barInFoo" pBar="10"/>
+        <Baz id="baz0InFoo" pBaz="0" pBar="0"/>
+        <Baz id="baz1InFoo" pBaz="1" pBar="1"/>
     </Foo>
-    <Baz id="baz0" p0="0" p1="1"/>
+    <Baz id="baz0" pBaz="100" pBar="1000"/>
 </FooML>

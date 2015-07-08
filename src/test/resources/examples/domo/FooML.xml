@@ -4,15 +4,19 @@
     <ComponentType name="Base"/>
 
     <ComponentType name="Bar" extends="Base" >
-        <Parameter name="p0"/>
+    	<Requirement name="pFoo"/>
+        <Parameter name="pBar"/>
+        <DerivedParameter name="dpBar" value="pFoo/pBar"/>
     </ComponentType>
 
     <ComponentType name="Baz" extends="Bar">
-        <Parameter name="p1"/>
+        <Parameter name="pBaz"/>
     </ComponentType>
 
     <ComponentType name="Foo" extends="Base">
-        <Child type="Bar"/>
+        <Parameter name="pFoo"/>
+        <Child type="Bar" name="FooBar"/>
+        <Children type="Baz" name="FooBazs"/>
     </ComponentType>
 
 </Lems>
