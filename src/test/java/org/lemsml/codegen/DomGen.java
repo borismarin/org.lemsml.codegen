@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -15,7 +16,11 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.Result;
 import javax.xml.transform.stream.StreamResult;
 
+import org.junit.Before;
 import org.junit.Test;
+import org.lemsml.codegen.domo.Bar;
+import org.lemsml.codegen.domo.Base;
+import org.lemsml.codegen.domo.Baz;
 import org.lemsml.codegen.domo.Foo;
 import org.lemsml.codegen.domo.FooML;
 import org.lemsml.model.compiler.LEMSCompilerFrontend;
@@ -34,18 +39,14 @@ import com.google.common.io.Files;
 public class DomGen {
 
 	private JAXBContext jaxbContext;
+	private FooML fooModel;
+	private Lems domainDefs;
 
-
-	@Test
-	public void testDomGen() throws Throwable {
-
-		Lems domainDefs = new LEMSCompilerFrontend(
-				getLocalFile("/examples/domo/fooml.xml"))
+	@Before
+	public void setUp() throws Throwable, JAXBException {
+		domainDefs = new LEMSCompilerFrontend(
+				getLocalFile("/examples/domo/FooML.xml"))
 				.generateLEMSDocument();
-
-		// The compiler will have a "domain specific library" backend
-		ST stTest = merge(domainDefs, "fooML");
-		System.out.println(stTest.render());
 
 		// We then want to unmarshall a DS model (defined in xml) using the
 		// generated (hybrid domain/lems) objects (of which we have literal
@@ -55,30 +56,38 @@ public class DomGen {
 		jaxbContext = JAXBContext.newInstance("org.lemsml.codegen.domo");
 		//genSchema(jaxbContext); //TODO: see comment on method
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		FooML fooModel = (FooML) jaxbUnmarshaller.unmarshal(model);
+		fooModel = (FooML) jaxbUnmarshaller.unmarshal(model);
 
 		//TODO: do we always implicitly "include" the defs?
 		//      what about constants / ... ?
 		fooModel.getComponentTypes().addAll(domainDefs.getComponentTypes());
 		new LEMSSemanticAnalyser(fooModel).analyse();
-
-		testTypes(fooModel);
-		testEvaluation(fooModel);
-		testMarshalling(fooModel);
 	}
 
-	public void testTypes(FooML fooModel) throws LEMSCompilerException {
+	@Test
+	public void testDoMoGen() {
+		// The compiler will have a "domain specific library" backend
+		ST stTest = merge(domainDefs, "fooML");
+		System.out.println(stTest.render());
+	}
+
+	@Test
+	public void testTypes() throws LEMSCompilerException {
 		assertEquals(1, fooModel.getFoos().size());
 		assertEquals(0, fooModel.getBars().size());
-		assertEquals(1, fooModel.getAllBars().size());
-		assertEquals(2, fooModel.getAllBases().size());
+		assertEquals(6, fooModel.getAllOfType(Bar.class).size());
+		assertEquals(5, fooModel.getAllOfType(Baz.class).size());
+		assertEquals(10, fooModel.getAllOfType(Base.class).size());
 
 		Foo foo0 = (Foo) fooModel.getComponentById("foo0");
+
+		assertEquals(foo0, fooModel.getAllOfType(Foo.class).get(0));
 		assertEquals(2, foo0.getFooBazs().size());
 		assertEquals("10", foo0.getFooBar().getParameterValue("pBar"));
 	}
 
-	public void testEvaluation(FooML fooModel) throws LEMSCompilerException {
+	@Test
+	public void testEvaluation() throws LEMSCompilerException {
 
 		Component foo0 = fooModel.getComponentById("foo0");
 		Component barInFoo0 = fooModel.getComponentById("barInFoo");
@@ -109,15 +118,28 @@ public class DomGen {
 							.evaluate("dpBar").getValue().doubleValue(), 1e-12);
 	}
 
-	public void testMarshalling(FooML fooModel)
+	@Test
+	public void testMarshalling()
 			throws JAXBException, PropertyException, IOException {
 
 		File tmpFile = File.createTempFile("test", ".xml");
 		Marshaller marshaller = jaxbContext.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
 		fooModel.getComponentTypes().clear();
+		eraseTypes(fooModel.getComponents()); //TODO: extremely ugly hack
+
 		marshaller.marshal(fooModel, tmpFile);
 		System.out.println(Files.toString(tmpFile, Charsets.UTF_8));
+	}
+
+	//TODO: argh! @XmlTransient in ext.Comp isn't overriding type from (on-ext)Comp
+	void eraseTypes(List<Component> list){
+		for(Component comp : list){
+			eraseTypes(comp.getComponent());
+			comp.withType(null);
+		}
+
 	}
 
 	// @Test

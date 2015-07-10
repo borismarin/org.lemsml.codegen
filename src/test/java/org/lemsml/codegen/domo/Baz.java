@@ -1,11 +1,18 @@
 package org.lemsml.codegen.domo;
 
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
+
+import org.lemsml.model.exceptions.LEMSCompilerException;
 
 @XmlType
 public class Baz extends Bar {
+
 	public String getPBaz() {
-		return getOtherAttributes().get(new QName("pBaz"));
+		return getParameterValue("pBaz");
 	}
+
+	public void setPBaz(String val) throws LEMSCompilerException {
+		withParameterValue("pBaz", val);
+	}
+
 }

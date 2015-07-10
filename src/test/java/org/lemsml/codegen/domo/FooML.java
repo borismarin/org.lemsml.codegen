@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.lemsml.model.extended.Component;
+import org.lemsml.model.extended.interfaces.HasComponents;
 
 @XmlRootElement(name = "FooML")
 public class FooML extends org.lemsml.model.extended.Lems {
@@ -19,6 +20,8 @@ public class FooML extends org.lemsml.model.extended.Lems {
 	protected List<Bar> bars = new ArrayList<Bar>();
 	@XmlElement(name = "Baz")
 	protected List<Baz> bazs = new ArrayList<Baz>();
+	@XmlElement(name = "Goo")
+	protected List<Goo> goos = new ArrayList<Goo>();
 
 	@XmlElement(name = "Components")
 	protected List<Component> components;
@@ -39,23 +42,26 @@ public class FooML extends org.lemsml.model.extended.Lems {
 		return this.bases;
 	}
 
-	public List<Bar> getAllBars() {
-
-		List<Bar> bars = new ArrayList<Bar>();
-		bars.addAll(getBars());
-		bars.addAll(getBazs());
-		return bars;
+	public List<Goo> getGoos() {
+		return this.goos;
 	}
 
-	public List<Base> getAllBases() {
-		//Should that be recursive (into subcomps?)
-		List<Base> bases = new ArrayList<Base>();
-		bases.addAll(getBases());
-		bases.addAll(getFoos());
-		bases.addAll(getBars());
-		bases.addAll(getBazs());
-		return bases;
+	public <T extends Component> List<T> getAllOfType(Class<T> type) {
+		return getAllOfType(type, this);
 	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Component> List<T> getAllOfType(Class<T> type, HasComponents node) {
+		List<T> accum = new ArrayList<T>();
+		for(Component c : node.getComponents()){
+			accum.addAll(getAllOfType(type, (HasComponents) c));
+		}
+		if(type.isInstance(node)){
+			accum.add((T) node);
+		}
+		return accum;
+	}
+
 
 	@Override
 	public List<Component> getComponents() {
@@ -76,6 +82,10 @@ public class FooML extends org.lemsml.model.extended.Lems {
 			for (Baz b : getBazs()) {
 				b.setType(b.getClass().getSimpleName());
 				comps.add(b);
+			}
+			for (Goo g : getGoos()) {
+				g.setType(g.getClass().getSimpleName());
+				comps.add(g);
 			}
 		} else
 			comps = this.components;

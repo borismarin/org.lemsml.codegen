@@ -1,11 +1,23 @@
+import "parameters.stg"
+import "child.stg"
+import "children.stg"
+import "subcomponents.stg"
+import "imports.stg"
+
+
+quali_name(type) ::= "<pkg_name()>.<type.extends>"
+extension(type) ::= "extends <if(type.extends)><type.extends><else>Component<endif>"
+
+pkg_name() ::= "org.<ml_name>.model"
+pkg() ::= "package <pkg_name()>"
+
+
 domo(lems, ml_name) ::= <<
 
 //Test domain model generation from <lems.definedIn>
-//----------------------------------------//
+//---------------------------------------------------//
 <lems.componentTypes:class_file(); separator="\n">
 >>
-pkg_name() ::= "org.<ml_name>.model"
-pkg() ::= "package <pkg_name()>"
 
 class_file(type) ::= <<
 <pkg()>
@@ -14,17 +26,30 @@ class_file(type) ::= <<
 <class(type)>
 >>
 
-imports(type) ::= <<
-import javax.xml.bind.annotation.XmlType;
-<if(!type.extends)>import <lems_comp()><\n><endif>
->>
+
 
 class(type) ::= <<
 @XmlType
 class <type.name> <type:extension()> {
 
-<type.children:children(); separator = "\n\n">
-<type.parameters:accessors(); separator = "\n\n">
+<! see child.stg !>
+<type.children:child_declaration(); separator = "\n"><\\>
+
+<! see children.stg !>
+<type.childrens:children_declaration(); separator = "\n"><\\>
+
+<! see subcomp.stg !>
+<subcomponents(type)><\\>
+
+<! see parameters.stg !>
+<type.parameters:parameter_accessors(); separator = "\n\n"><\\>
+
+<! see child.stg !>
+<type.children:child_accessors(); separator = "\n\n"><\\>
+
+<! see children.stg !>
+<type.childrens:children_accessors(); separator = "\n"><\\>
+
 }
 
 //----------------------------------------//
@@ -32,34 +57,6 @@ class <type.name> <type:extension()> {
 
 
 
-lems_comp() ::= "org.lemsml.model.Component"
-quali_name() ::= "<pkg_name()>.<type.extends>"
-
-extension(type) ::= "extends <if_extends(type.extends, \"Component\")>"
-
-if_extends(if_true, if_false) ::= "<if(type.extends)><if_true><else><if_false><endif>"
-
-children(child) ::= <<
-	private List\<<child.type>\> <child.name; format="cap">s;
->>
 
 
-accessors(prop) ::= <<
-<prop:getter()>
-
-<prop:setter()>
->>
-
-
-setter(prop) ::= <<
-	public void set<prop.name; format="cap">(String val) {
-		withParameterValue("<prop.name>", val);
-	}
->>
-
-getter(prop) ::= <<
-	public String get<prop.name; format="cap">() {
-		return getParameterValue("<prop.name>");
-	}
->>
 

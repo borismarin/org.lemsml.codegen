@@ -13,10 +13,18 @@
         <Parameter name="pBaz"/>
     </ComponentType>
 
+    <ComponentType name="Gar" extends="Base">
+    </ComponentType>
+
     <ComponentType name="Foo" extends="Base">
         <Parameter name="pFoo"/>
-        <Child type="Bar" name="FooBar"/>
-        <Children type="Baz" name="FooBazs"/>
+        <Child type="Bar" name="fooBar"/>
+        <Children type="Baz" name="fooBazs"/>
+    </ComponentType>
+
+    <ComponentType name="Goo" extends="Base">
+        <Children type="Baz" name="gooBazs"/>
+        <Children type="Gar" name="gooGars"/>
     </ComponentType>
 
 </Lems>

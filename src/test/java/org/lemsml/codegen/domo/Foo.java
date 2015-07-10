@@ -20,17 +20,16 @@ public class Foo extends Base {
 	public List<Component> getComponent() {
 		List<Component> comps = new ArrayList<Component>();
 		if (component == null) {
-			for (Baz b : fooBazs) {
-				b.setType(b.getClass().getSimpleName());
-				comps.add(b);
+			for (Baz children : fooBazs) {
+				children.setType(children.getClass().getSimpleName());
+				comps.add(children);
 			}
 			fooBar.setType(fooBar.getClass().getSimpleName());
 			comps.add(fooBar);
 		} else
-			comps =  this.component;
+			comps = this.component;
 		return comps;
 	}
-
 
 	public String getPFoo() {
 		return getParameterValue("pFoo");
@@ -44,15 +43,8 @@ public class Foo extends Base {
 		return fooBar;
 	}
 
-	public void setFooBar(Bar bar) {
-		this.fooBar = bar;
-	}
-
 	public List<Baz> getFooBazs() {
 		return fooBazs;
 	}
 
-	public void setFooBazs(List<Baz> bazs) {
-		this.fooBazs = bazs;
-	}
 }
