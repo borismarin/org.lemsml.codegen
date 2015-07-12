@@ -19,13 +19,13 @@ public class Goo extends Base {
 	public List<Component> getComponent() {
 		List<Component> comps = new ArrayList<Component>();
 		if (component == null) {
-			for (Baz children : gooBazs) {
-				children.setType(children.getClass().getSimpleName());
-				comps.add(children);
+			for (Baz child : gooBazs) {
+				child.setType(child.getClass().getSimpleName());
+				comps.add(child);
 			}
-			for (Gar children : gooGars) {
-				children.setType(children.getClass().getSimpleName());
-				comps.add(children);
+			for (Gar child : gooGars) {
+				child.setType(child.getClass().getSimpleName());
+				comps.add(child);
 			}
 		} else
 			comps = this.component;

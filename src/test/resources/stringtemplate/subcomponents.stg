@@ -1,10 +1,10 @@
-subcomponents(type) ::= "<if(type.children || type.child)><\n><subComp_getter(type)><endif>"
+subcomponents(type) ::= "<if(type.childrens || type.children)><\n><subComp_getter(type)><endif>"
 
 subComp_getter(type) ::= <<
 	public List\<Component> getComponent() {
         List\<Component> comps = new ArrayList\<Component>();
         if (component == null) {
-        <type.childrens:add_childrens()>
+        <type.childrens:add_childrens(); separator="\n">
         <type.children:add_children()>
         } else
         	comps =  this.component;
@@ -13,9 +13,9 @@ subComp_getter(type) ::= <<
 >>
 
 add_childrens(children) ::= <<
-	for (<children.type> children : <children.name>) {
-		children.setType(children.getClass().getSimpleName());
-		comps.add(children);
+	for (<children.type> child : <children.name>) {
+		child.setType(child.getClass().getSimpleName());
+		comps.add(child);
 	}
 >>
 

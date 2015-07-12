@@ -30,7 +30,7 @@ class_file(type) ::= <<
 
 class(type) ::= <<
 @XmlType
-class <type.name> <type:extension()> {
+public class <type.name> <type:extension()> {
 
 <! see child.stg !>
 <type.children:child_declaration(); separator = "\n"><\\>
