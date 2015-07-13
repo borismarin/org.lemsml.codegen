@@ -3,6 +3,7 @@ import "child.stg"
 import "children.stg"
 import "subcomponents.stg"
 import "imports.stg"
+import "root_element.stg"
 
 
 quali_name(type) ::= "<pkg_name()>.<type.extends>"
@@ -17,6 +18,7 @@ domo(lems, ml_name) ::= <<
 //Test domain model generation from <lems.definedIn>
 //---------------------------------------------------//
 <lems.componentTypes:class_file(); separator="\n">
+<lems:root_element(); separator="\n">
 >>
 
 class_file(type) ::= <<
@@ -26,7 +28,7 @@ class_file(type) ::= <<
 <class(type)>
 >>
 
-
+getter_name(prop) ::= "get<prop; format=\"cap\">s"
 
 class(type) ::= <<
 @XmlType

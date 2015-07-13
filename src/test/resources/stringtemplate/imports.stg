@@ -12,3 +12,4 @@ import javax.xml.bind.annotation.XmlType;
 >>
 
 lems_comp() ::= "org.lemsml.model.extended.Component"
+lems_root() ::= "org.lemsml.model.extended.Lems"

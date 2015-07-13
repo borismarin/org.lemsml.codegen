@@ -5,7 +5,7 @@ subComp_getter(type) ::= <<
         List\<Component> comps = new ArrayList\<Component>();
         if (component == null) {
         <type.childrens:add_childrens(); separator="\n">
-        <type.children:add_children()>
+        <type.children:add_children();  separator="\n">
         } else
         	comps =  this.component;
         return comps;

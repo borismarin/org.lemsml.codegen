@@ -8,9 +8,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.lemsml.model.exceptions.LEMSCompilerException;
 import org.lemsml.model.extended.Component;
+import org.lemsml.model.extended.interfaces.HasComponents;
 
 @XmlType
-public class Foo extends Base {
+public class Foo extends Base implements HasComponents {
 	@XmlElement(name = "Bar")
 	private Bar fooBar;
 

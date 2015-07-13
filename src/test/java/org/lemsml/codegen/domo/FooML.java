@@ -51,17 +51,17 @@ public class FooML extends org.lemsml.model.extended.Lems {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends Component> List<T> getAllOfType(Class<T> type, HasComponents node) {
+	public <T extends Component> List<T> getAllOfType(Class<T> type,
+			HasComponents node) {
 		List<T> accum = new ArrayList<T>();
-		for(Component c : node.getComponents()){
-			accum.addAll(getAllOfType(type, (HasComponents) c));
+		for (Component c : node.getComponents()) {
+			accum.addAll(getAllOfType(type, c));
 		}
-		if(type.isInstance(node)){
+		if (type.isInstance(node)) {
 			accum.add((T) node);
 		}
 		return accum;
 	}
-
 
 	@Override
 	public List<Component> getComponents() {
@@ -87,8 +87,9 @@ public class FooML extends org.lemsml.model.extended.Lems {
 				g.setType(g.getClass().getSimpleName());
 				comps.add(g);
 			}
-		} else
+		} else {
 			comps = this.components;
+		}
 		return comps;
 	}
 
