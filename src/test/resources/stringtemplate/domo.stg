@@ -22,7 +22,7 @@ domo(lems, ml_name) ::= <<
 >>
 
 class_file(type) ::= <<
-<pkg()>
+<pkg()>;
 
 <imports(type)>
 <class(type)>

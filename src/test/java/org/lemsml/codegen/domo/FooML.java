@@ -13,37 +13,58 @@ import org.lemsml.model.extended.interfaces.HasComponents;
 public class FooML extends org.lemsml.model.extended.Lems {
 
 	@XmlElement(name = "Base")
-	protected List<Base> bases = new ArrayList<Base>();
-	@XmlElement(name = "Foo")
-	protected List<Foo> foos = new ArrayList<Foo>();
+	private List<Base> bases = new ArrayList<Base>();
+
 	@XmlElement(name = "Bar")
-	protected List<Bar> bars = new ArrayList<Bar>();
+	private List<Bar> bars = new ArrayList<Bar>();
+
 	@XmlElement(name = "Baz")
-	protected List<Baz> bazs = new ArrayList<Baz>();
+	private List<Baz> bazs = new ArrayList<Baz>();
+
+	@XmlElement(name = "Gar")
+	private List<Gar> gars = new ArrayList<Gar>();
+
+	@XmlElement(name = "Foo")
+	private List<Foo> foos = new ArrayList<Foo>();
+
 	@XmlElement(name = "Goo")
-	protected List<Goo> goos = new ArrayList<Goo>();
+	private List<Goo> goos = new ArrayList<Goo>();
 
 	@XmlElement(name = "Components")
 	protected List<Component> components;
 
-	public List<Foo> getFoos() {
-		return this.foos;
-	}
-
-	public List<Bar> getBars() {
-		return this.bars;
-	}
-
-	public List<Baz> getBazs() {
-		return this.bazs;
-	}
-
-	public List<Base> getBases() {
-		return this.bases;
-	}
-
-	public List<Goo> getGoos() {
-		return this.goos;
+	@Override
+	public List<Component> getComponents() {
+	       	List<Component> comps = new ArrayList<Component>();
+	       	if (components == null) {
+				for (Base c : getBases()) {
+					c.setType(c.getClass().getSimpleName());
+					comps.add(c);
+				}
+				for (Bar c : getBars()) {
+					c.setType(c.getClass().getSimpleName());
+					comps.add(c);
+				}
+				for (Baz c : getBazs()) {
+					c.setType(c.getClass().getSimpleName());
+					comps.add(c);
+				}
+				for (Gar c : getGars()) {
+					c.setType(c.getClass().getSimpleName());
+					comps.add(c);
+				}
+				for (Foo c : getFoos()) {
+					c.setType(c.getClass().getSimpleName());
+					comps.add(c);
+				}
+				for (Goo c : getGoos()) {
+					c.setType(c.getClass().getSimpleName());
+					comps.add(c);
+				}
+	       	} else {
+	       		comps =  this.components;
+	       	}
+	       	return comps;
 	}
 
 	public <T extends Component> List<T> getAllOfType(Class<T> type) {
@@ -52,45 +73,36 @@ public class FooML extends org.lemsml.model.extended.Lems {
 
 	@SuppressWarnings("unchecked")
 	public <T extends Component> List<T> getAllOfType(Class<T> type,
-			HasComponents node) {
+	        HasComponents node) {
 		List<T> accum = new ArrayList<T>();
 		for (Component c : node.getComponents()) {
-			accum.addAll(getAllOfType(type, c));
+	        accum.addAll(getAllOfType(type, c));
 		}
 		if (type.isInstance(node)) {
-			accum.add((T) node);
+	        accum.add((T) node);
 		}
 		return accum;
 	}
 
-	@Override
-	public List<Component> getComponents() {
-		List<Component> comps = new ArrayList<Component>();
-		if (components == null) {
-			for (Base b : getBases()) {
-				b.setType(b.getClass().getSimpleName());
-				comps.add(b);
-			}
-			for (Foo f : getFoos()) {
-				f.setType(f.getClass().getSimpleName());
-				comps.add(f);
-			}
-			for (Bar b : getBars()) {
-				b.setType(b.getClass().getSimpleName());
-				comps.add(b);
-			}
-			for (Baz b : getBazs()) {
-				b.setType(b.getClass().getSimpleName());
-				comps.add(b);
-			}
-			for (Goo g : getGoos()) {
-				g.setType(g.getClass().getSimpleName());
-				comps.add(g);
-			}
-		} else {
-			comps = this.components;
-		}
-		return comps;
+
+	public List<Base> getBases() {
+		return this.bases;
 	}
+	public List<Bar> getBars() {
+		return this.bars;
+	}
+	public List<Baz> getBazs() {
+		return this.bazs;
+	}
+	public List<Gar> getGars() {
+		return this.gars;
+	}
+	public List<Foo> getFoos() {
+		return this.foos;
+	}
+	public List<Goo> getGoos() {
+		return this.goos;
+	}
+
 
 }

@@ -1,9 +1,10 @@
 root_element(lems) ::= <<
 
-<pkg()>
+<pkg()>;
 
 <root_imports()>
 
+@XmlRootElement(name = "FooML")
 public class FooML extends <lems_root()> {
 
 	<lems.componentTypes:type_list(); separator="\n\n">
@@ -22,12 +23,13 @@ public class FooML extends <lems_root()> {
 
 
 get_component(lems) ::= <<
-public List\<Component> getComponent() {
+@Override
+public List\<Component> getComponents() {
        	List\<Component> comps = new ArrayList\<Component>();
-       	if (component == null) {
+       	if (components == null) {
 			<lems.componentTypes:add_type(); separator="\n">
        	} else {
-       		comps =  this.component;
+       		comps =  this.components;
        	}
        	return comps;
 }
@@ -68,7 +70,7 @@ public \<T extends Component> List\<T> getAllOfType(Class\<T> type,
 
 
 getter(type) ::= <<
-public List\<<type.name>\> <type.name:getter_name()> {
+public List\<<type.name>\> <type.name:getter_name()>() {
 	return this.<type.name; format="lower">s;
 }
 

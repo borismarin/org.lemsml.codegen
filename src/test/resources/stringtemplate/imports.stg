@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 <if(type.parameters)>import org.lemsml.model.exceptions.LEMSCompilerException;<endif>
-<if((type.children || type.childrens) || (!type.extends))>import <lems_comp()><\n><endif>
+<if((type.children || type.childrens) || (!type.extends))>import <lems_comp()>;<\n><endif>
 >>
 
 lems_comp() ::= "org.lemsml.model.extended.Component"
