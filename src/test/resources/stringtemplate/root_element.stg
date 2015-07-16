@@ -4,8 +4,8 @@ root_element(lems) ::= <<
 
 <root_imports()>
 
-@XmlRootElement(name = "FooML")
-public class FooML extends <lems_root()> {
+@XmlRootElement(name = "<ml_name>")
+public class <ml_name; format="cap"> extends <lems_root()> {
 
 	<lems.componentTypes:type_list(); separator="\n\n">
 

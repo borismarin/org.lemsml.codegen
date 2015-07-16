@@ -12,6 +12,14 @@ public class ObjectFactory {
 		return new Foo();
 	}
 
+	public Goo createGoo() {
+		return new Goo();
+	}
+
+	public Gar createGar() {
+		return new Gar();
+	}
+
 	public Bar createBar() {
 		return new Bar();
 	}

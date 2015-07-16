@@ -1,4 +1,4 @@
-package org.lemsml.codegen.domo;
+package org.lemsml.codegen.fakeNML;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,26 +6,20 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.lemsml.model.exceptions.LEMSCompilerException;
 import org.lemsml.model.extended.Component;
 
 @XmlType
-public class Goo extends Base {
+public class HHChannel extends Component {
 
-	@XmlElement(name = "Baz")
-	private List<Baz> gooBazs;
-
-	@XmlElement(name = "Gar")
-	private List<Gar> gooGars;
+	@XmlElement(name = "HHGate")
+	private List<HHGate> gates;
 
 
 	public List<Component> getComponent() {
         List<Component> comps = new ArrayList<Component>();
         if (component == null) {
-        	for (Baz child : gooBazs) {
-        		child.setType(child.getClass().getSimpleName());
-        		comps.add(child);
-        	}
-        	for (Gar child : gooGars) {
+        	for (HHGate child : gates) {
         		child.setType(child.getClass().getSimpleName());
         		comps.add(child);
         	}
@@ -33,12 +27,15 @@ public class Goo extends Base {
         	comps =  this.component;
         return comps;
 	}
-
-	public List<Baz> getGooBazs() {
-		return this.gooBazs;
+	public String getConductance() {
+		return getParameterValue("conductance");
 	}
 
-	public List<Gar> getGooGars() {
-		return this.gooGars;
+	public void setConductance(String val) throws LEMSCompilerException {
+		withParameterValue("conductance", val);
+	}
+
+	public List<HHGate> getGates() {
+		return this.gates;
 	}
 }
