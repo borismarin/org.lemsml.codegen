@@ -20,6 +20,8 @@ add_childrens(children) ::= <<
 >>
 
 add_children(child) ::= <<
-	<child.name>.setType(<child.name>.getClass().getSimpleName());
+	<child.name>.setType((null != <child.name>.getType()) ? <child.name>.getType() : <child.name>.getClass().getSimpleName());
+   	<child.name>.setName("<child.name>");
     comps.add(<child.name>);
+
 >>

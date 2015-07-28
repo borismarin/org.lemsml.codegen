@@ -49,14 +49,14 @@ private List\<<type.name>\> <type.name; format="lower">s = new ArrayList\<<type.
 >>
 
 all_of_type() ::= <<
-public \<T extends Component> List\<T> getAllOfType(Class\<T> type) {
+public \<T extends Component> Set\<T> getAllOfType(Class\<T> type) {
 	return getAllOfType(type, this);
 }
 
 @SuppressWarnings("unchecked")
-public \<T extends Component> List\<T> getAllOfType(Class\<T> type,
+public \<T extends Component> Set\<T> getAllOfType(Class\<T> type,
         HasComponents node) {
-	List\<T> accum = new ArrayList\<T>();
+	List\<T> accum = new HashSet\<T>();
 	for (Component c : node.getComponents()) {
         accum.addAll(getAllOfType(type, c));
 	}
@@ -79,7 +79,9 @@ public List\<<type.name>\> <type.name:getter_name()>() {
 
 root_imports() ::= <<
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

@@ -2,6 +2,7 @@ package org.lemsml.codegen;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -10,6 +11,8 @@ import javax.xml.bind.Unmarshaller;
 import org.junit.Before;
 import org.junit.Test;
 import org.lemsml.codegen.fakeNML.FakeNML;
+import org.lemsml.codegen.fakeNML.HHChannel;
+import org.lemsml.codegen.fakeNML.HHGate;
 import org.lemsml.model.compiler.LEMSCompilerFrontend;
 import org.lemsml.model.compiler.semantic.LEMSSemanticAnalyser;
 import org.lemsml.model.extended.Lems;
@@ -31,15 +34,18 @@ public class NMLGen {
 				.generateLEMSDocument();
 
 		// pregenerated examples FooML.java Foo.java, etc)
-//		File model = getLocalFile("/examples/lems/example1_comps.xml");
-//		jaxbContext = JAXBContext.newInstance("org.lemsml.codegen.fakeNML");
-//		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-//		nmlDoc = (FakeNML) jaxbUnmarshaller.unmarshal(model);
-//
-//		//TODO: do we always implicitly "include" the defs?
-//		//      what about constants / ... ?
-//		nmlDoc.getComponentTypes().addAll(domainDefs.getComponentTypes());
-//		new LEMSSemanticAnalyser(nmlDoc).analyse();
+		File model = getLocalFile("/examples/lems/example1_comps.xml");
+		jaxbContext = JAXBContext.newInstance("org.lemsml.codegen.fakeNML");
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		nmlDoc = (FakeNML) jaxbUnmarshaller.unmarshal(model);
+
+		// TODO: do we always implicitly "include" the defs?
+		// what about constants / ... ?
+		nmlDoc.getComponentTypes().addAll(domainDefs.getComponentTypes());
+		nmlDoc.getDimensions().addAll(domainDefs.getDimensions());
+		nmlDoc.getUnits().addAll(domainDefs.getUnits());
+		nmlDoc.getConstants().addAll(domainDefs.getConstants());
+		new LEMSSemanticAnalyser(nmlDoc).analyse();
 	}
 
 	@Test
@@ -49,9 +55,15 @@ public class NMLGen {
 		System.out.println(stTest.render());
 	}
 
+	@Test
+	public void testParsing(){
+		Set<HHChannel> allChannels = nmlDoc.getAllOfType(HHChannel.class);
+		for(HHChannel chan : allChannels){
+			for(HHGate gate : chan.getGates()){
+				System.out.println(chan + " " + gate);
+			}
+		}
 
-	protected File getLocalFile(String fname) {
-		return new File(getClass().getResource(fname).getFile());
 	}
 
 	public ST merge(Lems lems, String langName) {
@@ -63,6 +75,10 @@ public class NMLGen {
 		stTest.add("lems", lems);
 		stTest.add("ml_name", langName);
 		return stTest;
+	}
+
+	protected File getLocalFile(String fname) {
+		return new File(getClass().getResource(fname).getFile());
 	}
 
 }

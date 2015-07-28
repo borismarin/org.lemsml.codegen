@@ -22,10 +22,10 @@ public class HHGate extends Component {
 	public List<Component> getComponent() {
         List<Component> comps = new ArrayList<Component>();
         if (component == null) {
-        	Forward.setType(Forward.getClass().getSimpleName());
+        	Forward.setType((null != Forward.getType()) ? Forward.getType() : Forward.getClass().getSimpleName());
         	Forward.setName("Forward");
             comps.add(Forward);
-        	Reverse.setType(Reverse.getClass().getSimpleName());
+        	Reverse.setType((null != Reverse.getType()) ? Reverse.getType() : Reverse.getClass().getSimpleName());
         	Reverse.setName("Reverse");
             comps.add(Reverse);
         } else

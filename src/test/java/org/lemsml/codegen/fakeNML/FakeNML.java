@@ -1,7 +1,9 @@
 package org.lemsml.codegen.fakeNML;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -123,14 +125,14 @@ public class FakeNML extends org.lemsml.model.extended.Lems {
 	       	return comps;
 	}
 
-	public <T extends Component> List<T> getAllOfType(Class<T> type) {
+	public <T extends Component> Set<T> getAllOfType(Class<T> type) {
 		return getAllOfType(type, this);
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends Component> List<T> getAllOfType(Class<T> type,
+	public <T extends Component> Set<T> getAllOfType(Class<T> type,
 	        HasComponents node) {
-		List<T> accum = new ArrayList<T>();
+		Set<T> accum = new HashSet<T>();
 		for (Component c : node.getComponents()) {
 	        accum.addAll(getAllOfType(type, c));
 		}
