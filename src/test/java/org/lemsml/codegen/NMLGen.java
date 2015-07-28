@@ -37,7 +37,6 @@ import org.stringtemplate.v4.StringRenderer;
 
 import tec.units.ri.quantity.Quantities;
 
-
 public class NMLGen {
 
 	private JAXBContext jaxbContext;
@@ -80,37 +79,38 @@ public class NMLGen {
 			for (HHGate gate : chan.getGates()) {
 				System.out.println(chan + " " + gate);
 
-				JFrame frame = new JFrame(gate.getName());
-				frame.setSize(800, 600);
-				frame.setVisible(true);
-				plotRate(gate.getForward(), frame);
-				plotRate(gate.getReverse(), frame);
+				plotRate(gate.getForward());
+				plotRate(gate.getReverse());
 			}
 		}
 		System.in.read();
 	}
 
-	private void plotRate(HHRate rate, JFrame frame) throws LEMSCompilerException {
-			Plot2DPanel plot = new Plot2DPanel();
+	private void plotRate(HHRate rate) throws LEMSCompilerException {
 		Scope scope = rate.getScope();
 		int npt = 100;
-		Map<Double, Double> graph = evalInGrid(scope, scope.resolve("r"), scope.resolve("v"), -80., 100., npt);
+		Map<Double, Double> graph = evalInGrid(scope, scope.resolve("r"),
+				scope.resolve("v"), -80., 100., npt);
 		double[] xs = new double[npt];
 		double[] ys = new double[npt];
 		int i = 0;
-		for(Entry<Double, Double> pt : graph.entrySet()){
+		for (Entry<Double, Double> pt : graph.entrySet()) {
 			xs[i] = pt.getKey();
 			ys[i] = pt.getValue();
 			i++;
 		}
+		JFrame frame = new JFrame(rate.getParent() + " " + rate.getName());
+		Plot2DPanel plot = new Plot2DPanel();
+		frame.setSize(800, 600);
+		frame.setVisible(true);
 		plot.addLinePlot(rate.getName(), xs, ys);
 		frame.setContentPane(plot);
 		frame.setVisible(true);
 	}
 
-	private static Map<Double, Double> evalInGrid(Scope scope,
-			Symbol toEval, Symbol indepVar, Double x0, Double x1,
-			Integer npoints) throws LEMSCompilerException {
+	private static Map<Double, Double> evalInGrid(Scope scope, Symbol toEval,
+			Symbol indepVar, Double x0, Double x1, Integer npoints)
+			throws LEMSCompilerException {
 
 		Map<Double, Double> graph = new LinkedHashMap<Double, Double>();
 
@@ -119,7 +119,7 @@ public class NMLGen {
 		String ivName = indepVar.getName();
 		Map<String, Quantity<?>> ctxt = new HashMap<String, Quantity<?>>();
 
-		Double dx = Math.ceil(Math.abs(x1 - x0) / npoints);
+		Double dx = Math.abs(x1 - x0) / npoints;
 		for (int i = 0; i < npoints; i++) {
 			Double x = x0 + i * dx;
 			ctxt.put(ivName, Quantities.getQuantity(x, dim));
