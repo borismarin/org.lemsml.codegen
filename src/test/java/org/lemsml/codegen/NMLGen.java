@@ -3,6 +3,7 @@ package org.lemsml.codegen;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,7 +12,6 @@ import java.util.Set;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
-import javax.swing.JFrame;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -29,13 +29,18 @@ import org.lemsml.model.extended.Lems;
 import org.lemsml.model.extended.NamedDimensionalType;
 import org.lemsml.model.extended.Scope;
 import org.lemsml.model.extended.Symbol;
-import org.math.plot.Plot2DPanel;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;
 import org.stringtemplate.v4.StringRenderer;
 
 import tec.units.ri.quantity.Quantities;
+
+import com.xeiam.xchart.BitmapEncoder;
+import com.xeiam.xchart.BitmapEncoder.BitmapFormat;
+import com.xeiam.xchart.Chart;
+import com.xeiam.xchart.ChartBuilder;
+import com.xeiam.xchart.StyleManager.ChartTheme;
 
 public class NMLGen {
 
@@ -83,10 +88,10 @@ public class NMLGen {
 				plotRate(gate.getReverse());
 			}
 		}
-		System.in.read();
 	}
 
-	private void plotRate(HHRate rate) throws LEMSCompilerException {
+	private void plotRate(HHRate rate) throws LEMSCompilerException,
+			IOException {
 		Scope scope = rate.getScope();
 		int npt = 100;
 		Map<Double, Double> graph = evalInGrid(scope, scope.resolve("r"),
@@ -99,13 +104,26 @@ public class NMLGen {
 			ys[i] = pt.getValue();
 			i++;
 		}
-		JFrame frame = new JFrame(rate.getParent() + " " + rate.getName());
-		Plot2DPanel plot = new Plot2DPanel();
-		frame.setSize(800, 600);
-		frame.setVisible(true);
-		plot.addLinePlot(rate.getName(), xs, ys);
-		frame.setContentPane(plot);
-		frame.setVisible(true);
+		String rateName = MessageFormat.format("[{0} channel]: gate ({1}), {2}",
+				rate.getParent().getParent().getName(),
+				rate.getParent().getName(),
+				rate.getName());
+		Chart chart = new ChartBuilder().width(800).height(600)
+				.theme(ChartTheme.Matlab).title(rateName).xAxisTitle("V(mV)")
+				.yAxisTitle("rate").build();
+		chart.getStyleManager().setPlotGridLinesVisible(false);
+		chart.getStyleManager().setLegendVisible(false);
+		chart.addSeries(rateName, xs, ys);
+
+		String fname = MessageFormat.format("/tmp/{0}-{1}.png", rate
+				.getParent().getName(), rate.getName());
+		BitmapEncoder.saveBitmapWithDPI(chart, fname, BitmapFormat.PNG, 300);
+
+		// Plot2DPanel plot = new Plot2DPanel();
+		// plot.addLinePlot(rate.getName(), xs, ys);
+		// FrameView frame = new FrameView(plot);
+		// File file = new File();
+		// plot.toGraphicFile(file);
 	}
 
 	private static Map<Double, Double> evalInGrid(Scope scope, Symbol toEval,

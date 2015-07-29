@@ -8,13 +8,6 @@
 	<name>org.lemsml.codegen</name>
 	<url>http://maven.apache.org</url>
 
-	<repositories>
-		<repository>
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
-		</repository>
-	</repositories>
-
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -40,9 +33,9 @@
 			<version>4.0.2</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.yannrichet</groupId>
-			<artifactId>jmathplot</artifactId>
-			<version>d71be0d7e6ccec2fd2d5042a23c8e78545f66af5</version>
+			<groupId>com.xeiam.xchart</groupId>
+			<artifactId>xchart</artifactId>
+			<version>2.5.0</version>
 		</dependency>
 	</dependencies>
 	<build>
