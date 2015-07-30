@@ -15,7 +15,7 @@ public class HHCell extends Component {
 	@XmlElement(name = "ChannelPopulation")
 	private List<ChannelPopulation> populations;
 
-
+	@Override
 	public List<Component> getComponent() {
         List<Component> comps = new ArrayList<Component>();
         if (component == null) {
@@ -27,6 +27,7 @@ public class HHCell extends Component {
         	comps =  this.component;
         return comps;
 	}
+
 	public String getCapacitance() {
 		return getParameterValue("capacitance");
 	}

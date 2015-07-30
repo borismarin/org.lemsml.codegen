@@ -1,6 +1,7 @@
 subcomponents(type) ::= "<if(type.childrens || type.children)><\n><subComp_getter(type)><endif>"
 
 subComp_getter(type) ::= <<
+	@Override
 	public List\<Component> getComponent() {
         List\<Component> comps = new ArrayList\<Component>();
         if (component == null) {

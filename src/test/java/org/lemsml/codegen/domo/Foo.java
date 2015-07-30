@@ -19,6 +19,7 @@ public class Foo extends Base {
 	private List<Baz> fooBazs;
 
 
+	@Override
 	public List<Component> getComponent() {
         List<Component> comps = new ArrayList<Component>();
         if (component == null) {

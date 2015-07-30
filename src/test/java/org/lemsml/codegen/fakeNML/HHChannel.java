@@ -16,6 +16,7 @@ public class HHChannel extends Component {
 	private List<HHGate> gates;
 
 
+	@Override
 	public List<Component> getComponent() {
         List<Component> comps = new ArrayList<Component>();
         if (component == null) {

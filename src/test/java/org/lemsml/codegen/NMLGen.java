@@ -72,11 +72,18 @@ public class NMLGen {
 	@Test
 	public void testDoMoGen() {
 		// The compiler will have a "domain specific library" backend
-		ST stTest = merge(domainDefs, "fakeNML");
+		ST stTest = generateDomainClasses(domainDefs, "fakeNML");
 		System.out.println(stTest.render());
 	}
 
 	@Test
+	public void testInfoExtractor() {
+		// The compiler will have a "domain specific library" backend
+		ST stTest = generateInfo(domainDefs);
+		System.out.println(stTest.render());
+	}
+
+	//@Test
 	public void testParsing() throws LEMSCompilerException, IOException {
 
 		Set<HHChannel> allChannels = nmlDoc.getAllOfType(HHChannel.class);
@@ -109,21 +116,21 @@ public class NMLGen {
 				rate.getParent().getName(),
 				rate.getName());
 		Chart chart = new ChartBuilder().width(800).height(600)
-				.theme(ChartTheme.Matlab).title(rateName).xAxisTitle("V(mV)")
-				.yAxisTitle("rate").build();
+				.theme(ChartTheme.Matlab)
+				.title(rateName)
+				.xAxisTitle("V(mV)")
+				.yAxisTitle("rate(1/ms)")
+				.build();
 		chart.getStyleManager().setPlotGridLinesVisible(false);
 		chart.getStyleManager().setLegendVisible(false);
+		chart.getStyleManager().setXAxisTickMarkSpacingHint(150);
+		chart.getStyleManager().setYAxisTickMarkSpacingHint(150);
 		chart.addSeries(rateName, xs, ys);
 
 		String fname = MessageFormat.format("/tmp/{0}-{1}.png", rate
 				.getParent().getName(), rate.getName());
-		BitmapEncoder.saveBitmapWithDPI(chart, fname, BitmapFormat.PNG, 300);
+		BitmapEncoder.saveBitmapWithDPI(chart, fname, BitmapFormat.PNG, 150);
 
-		// Plot2DPanel plot = new Plot2DPanel();
-		// plot.addLinePlot(rate.getName(), xs, ys);
-		// FrameView frame = new FrameView(plot);
-		// File file = new File();
-		// plot.toGraphicFile(file);
 	}
 
 	private static Map<Double, Double> evalInGrid(Scope scope, Symbol toEval,
@@ -148,7 +155,7 @@ public class NMLGen {
 		return graph;
 	}
 
-	public ST merge(Lems lems, String langName) {
+	public ST generateDomainClasses(Lems lems, String langName) {
 		URL stURL = getClass().getResource("/stringtemplate/domo.stg");
 		STGroup group = new STGroupFile(stURL.getFile());
 		group.registerRenderer(String.class, new StringRenderer());
@@ -158,6 +165,41 @@ public class NMLGen {
 		stTest.add("ml_name", langName);
 		return stTest;
 	}
+
+
+	public ST generateInfo(Lems lems) {
+		URL stURL = getClass().getResource("/stringtemplate/info.stg");
+		STGroup group = new STGroupFile(stURL.getFile());
+		group.registerRenderer(String.class, new StringRenderer());
+		group.registerRenderer(Symbol.class, new LemsExpressionRenderer());
+		group.registerModelAdaptor(Scope.class, new ScopeAdaptor());
+
+		ST stTest = group.getInstanceOf("info");
+
+//		class IntermediateRepr {
+//			private String name;
+//			private Set<HHCell> cells;
+//			public String getName() {
+//				return name;
+//			}
+//			public void setName(String name) {
+//				this.name = name;
+//			}
+//			public Set<HHCell> getCells() {
+//				return cells;
+//			}
+//			public void setCells(Set<HHCell> cells) {
+//				this.cells = cells;
+//			}
+//		}
+//		IntermediateRepr ir = new IntermediateRepr();
+//		ir.setName("Fake NeuroML example");
+//		ir.setCells(nmlDoc.getAllOfType(HHCell.class));
+
+		stTest.add("domo", nmlDoc);
+		return stTest;
+	}
+
 
 	protected File getLocalFile(String fname) {
 		return new File(getClass().getResource(fname).getFile());

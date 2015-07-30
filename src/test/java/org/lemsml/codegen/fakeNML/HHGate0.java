@@ -18,7 +18,7 @@ public class HHGate0 extends Component {
 	@XmlElement(name = "HHRate")
 	private HHRate Reverse;
 
-
+	@Override
 	public List<Component> getComponent() {
         List<Component> comps = new ArrayList<Component>();
         if (component == null) {

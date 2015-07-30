@@ -1,0 +1,69 @@
+info(domo, name) ::= <<
+# [FakeNML] <name>
+
+This model defines <length(domo.HHCells)> cell(s):
+
+<domo.HHCells:cell_info()>
+>>
+
+cell_info(cell) ::= <<
+
+## Cell <cell.name>
+This is a cell of type <cell.type>. It has <length(cell.populations)> channel population(s):
+
+<cell.populations:population_info(); separator="\n\n">
+>>
+
+
+population_info(pop) ::= <<
+- <pop.number> channels of type <pop.channel>
+<pop.channel:channel_info(); separator="\n">
+>>
+
+channel_info(chan) ::= <<
+Channel <chan.name> has <length(chan.gates)> gate(s):
+
+<chan.gates:gate_info(); separator="\n">
+>>
+
+gate_info(gate) ::= <<
+### Gate <gate.name>
+
+Forward Rate:
+$$<gate.forward.scope.r; format="latex">$$
+where
+
+<deps("r", gate.forward.scope, " ")>
+
+or, in _C_:
+
+    <gate.forward.scope.r; format="C">
+
+or, in _Java_:
+
+    <gate.forward.scope.r; format="Java">
+
+or as a Plot:
+![](/tmp/<gate.name>-forward.png)
+
+
+Reverse Rate:
+ $$<gate.reverse.scope.r; format="latex">$$
+ where
+
+<deps("r", gate.reverse.scope, " ")>
+![](/tmp/<gate.name>-reverse.png)
+
+>>
+
+
+deps(k, scope, id) ::= <<
+<scope.dependencies.graph.(k):
+	{d | <id>- _<d>_: $<scope.(d); format="latex">$<if(scope.dependencies.graph.(d))><\n><deps(d, scope, [id, id, id, id])><endif>}; separator="\n">
+>>
+
+
+
+
+
+

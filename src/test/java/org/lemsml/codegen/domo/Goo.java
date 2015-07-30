@@ -17,7 +17,7 @@ public class Goo extends Base {
 	@XmlElement(name = "Gar")
 	private List<Gar> gooGars;
 
-
+	@Override
 	public List<Component> getComponent() {
         List<Component> comps = new ArrayList<Component>();
         if (component == null) {

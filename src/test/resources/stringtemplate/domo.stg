@@ -1,6 +1,7 @@
 import "parameters.stg"
 import "child.stg"
 import "children.stg"
+import "reference.stg"
 import "subcomponents.stg"
 import "imports.stg"
 import "root_element.stg"
@@ -51,6 +52,10 @@ public class <type.name> <type:extension()> {
 
 <! see children.stg !>
 <type.childrens:children_accessors(); separator = "\n"><\\>
+
+<! see references.stg !>
+<type.componentReferences:reference_accessors(); separator = "\n"><\\>
+
 
 }
 
